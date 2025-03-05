@@ -41,3 +41,5 @@ application-*.yml
 
 ### shell script
 *.sh
+
+.DS_Store
