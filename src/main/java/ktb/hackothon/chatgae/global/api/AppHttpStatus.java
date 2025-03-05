@@ -21,7 +21,7 @@ public enum AppHttpStatus {
      * 400 : 잘못된 문법으로 인해 요청을 이해할 수 없음
      */
     BAD_REQUEST(400, HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
-
+    MISSING_REQUEST_IMAGES(400, HttpStatus.BAD_REQUEST, "이미지가 누락되었습니다."),
     /**
      * 401 : 인증된 사용자가 아님
      */
@@ -37,6 +37,11 @@ public enum AppHttpStatus {
      */
     NOT_FOUND(404, HttpStatus.NOT_FOUND, "존재하지 않는 리소스입니다."),
     NOT_FOUND_ENDPOINT(404, HttpStatus.NOT_FOUND, "존재하지 않는 엔드포인트입니다."),
+
+    /**
+     * 415 : 미디어 타입 에러
+     */
+    UNSUPPORTED_MEDIA_TYPE(415, HttpStatus.UNSUPPORTED_MEDIA_TYPE, "허용되지 않은 파일 형식입니다."),
 
     /**
      * 500 : 서버 내부에서 에러가 발생함
