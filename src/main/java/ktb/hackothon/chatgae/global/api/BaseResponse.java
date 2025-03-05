@@ -31,10 +31,9 @@ public class BaseResponse<T> {
                 .build();
     }
 
-    public static BaseResponse<Void> error(ErrorResponse e) {
+    public static BaseResponse<Void> error() {
         return BaseResponse.<Void>builder()
                 .status("error")
-                .error(e)
                 .build();
     }
 }

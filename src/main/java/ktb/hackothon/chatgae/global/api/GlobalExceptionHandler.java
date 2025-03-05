@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
 
 		return ResponseEntity
 				.status(500)
-				.body( BaseResponse.error(ErrorResponse.of(e)));
+				.body( BaseResponse.error());
 	}
 	@ExceptionHandler(ApiException.class)
 	public ResponseEntity<BaseResponse<Void>> apiExceptionHandler(ApiException e) {
@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
 
 		return ResponseEntity
 				.status(e.getStatus().getStatusCode())
-				.body(BaseResponse.error(ErrorResponse.of(e)));
+				.body(BaseResponse.error());
 	}
 
 	@ExceptionHandler(ConstraintViolationException.class)
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
 
 		return ResponseEntity
 				.status(400)
-				.body(BaseResponse.error(ErrorResponse.of(e)));
+				.body(BaseResponse.error());
 	}
 
 	@ExceptionHandler(NoResourceFoundException.class)
@@ -48,6 +48,6 @@ public class GlobalExceptionHandler {
 
 		return ResponseEntity
 				.status(404)
-				.body(BaseResponse.error(ErrorResponse.of(e)));
+				.body(BaseResponse.error());
 	}
 }
