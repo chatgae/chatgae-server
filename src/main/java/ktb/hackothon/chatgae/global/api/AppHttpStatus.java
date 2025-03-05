@@ -22,6 +22,9 @@ public enum AppHttpStatus {
      */
     BAD_REQUEST(400, HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
     MISSING_REQUEST_IMAGES(400, HttpStatus.BAD_REQUEST, "이미지가 누락되었습니다."),
+    INVALID_METADATA_IMAGE(400, HttpStatus.BAD_REQUEST, "경도와 위도 메타데이터가 존재하지 않는 이미지입니다"),
+    NOT_SUPPORTED_IMAGE(400, HttpStatus.BAD_REQUEST, "지원되지 않는 이미지입니다"),
+
     /**
      * 401 : 인증된 사용자가 아님
      */
