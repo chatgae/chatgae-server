@@ -1,0 +1,73 @@
+package ktb.hackothon.chatgae.domain.lost.service;
+
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.GpsDirectory;
+import ktb.hackothon.chatgae.domain.lost.domain.LostLocationEntity;
+import ktb.hackothon.chatgae.domain.lost.repository.LostRepository;
+import ktb.hackothon.chatgae.global.api.ApiException;
+import ktb.hackothon.chatgae.global.api.AppHttpStatus;
+import ktb.hackothon.chatgae.global.api.PkResponse;
+import ktb.hackothon.chatgae.global.service.S3Service;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class LostServiceImpl implements LostService {
+
+    private final LostRepository lostRepository;
+    private final S3Service s3Service;
+    @Override
+    @Transactional
+    public PkResponse createLostLocation(MultipartFile image) {
+        // 이미지 저장 후 URL 받아오기
+        String imageUrl = s3Service.uploadImage(image, 0L);
+
+        // 이미지 메타 데이터로 부터 위도 경도 데이터 만들기
+        double[] gps;
+
+        try {
+            gps = extractGpsFromImage(image);
+        } catch (IOException | ImageProcessingException e) {
+            throw new ApiException(AppHttpStatus.NOT_SUPPORTED_IMAGE);
+        }
+
+        LostLocationEntity lostLocation = lostRepository.save(
+                LostLocationEntity.builder()
+                        .imageUrl(imageUrl)
+                        .latitude(gps[0])
+                        .longitude(gps[1])
+                        .regDt(LocalDateTime.now())
+                        .build()
+        );
+
+        return PkResponse.of(lostLocation.getId());
+    }
+
+    private double[] extractGpsFromImage(MultipartFile image) throws IOException, ImageProcessingException {
+        // IOException 발생
+        InputStream inputStream = image.getInputStream();
+
+        // ImageProcessingException 발생
+        Metadata metadata = ImageMetadataReader.readMetadata(inputStream);
+        GpsDirectory gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
+
+        if (gpsDirectory == null || gpsDirectory.getGeoLocation() == null) {
+            throw new ApiException(AppHttpStatus.INVALID_METADATA_IMAGE);
+        }
+
+        double latitude = gpsDirectory.getGeoLocation().getLatitude();
+        double longitude = gpsDirectory.getGeoLocation().getLongitude();
+
+        return new double[]{latitude, longitude};
+    }
+}
