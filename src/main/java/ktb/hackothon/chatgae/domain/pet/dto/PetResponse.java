@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PetResponse {
-    private boolean success;
+    private int code;
     private String message;
     private Pet pet;
 }
