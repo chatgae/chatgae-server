@@ -5,6 +5,8 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.GpsDirectory;
 import ktb.hackothon.chatgae.domain.lost.domain.LostLocationEntity;
+import ktb.hackothon.chatgae.domain.lost.dto.Location;
+import ktb.hackothon.chatgae.domain.lost.dto.LostLocationResponse;
 import ktb.hackothon.chatgae.domain.lost.repository.LostRepository;
 import ktb.hackothon.chatgae.global.api.ApiException;
 import ktb.hackothon.chatgae.global.api.AppHttpStatus;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -51,6 +54,32 @@ public class LostServiceImpl implements LostService {
         );
 
         return PkResponse.of(lostLocation.getId());
+    }
+
+    @Override
+    public LostLocationResponse getLostLocations(double latitude, double longitude, int distance, int limit) {
+        List<Location> locations = lostRepository.findAllByGps(latitude, longitude, distance, limit)
+                .stream()
+                .map(Location::from)
+                .toList();
+
+        return LostLocationResponse.from(
+                locations.size(),
+                locations
+        );
+    }
+
+    @Override
+    public LostLocationResponse getAllLostLocations() {
+        List<Location> locations = lostRepository.findAll()
+                .stream()
+                .map(Location::from)
+                .toList();
+
+        return LostLocationResponse.from(
+                locations.size(),
+                locations
+        );
     }
 
     private double[] extractGpsFromImage(MultipartFile image) throws IOException, ImageProcessingException {
