@@ -26,13 +26,13 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ErrorResponse {
     int code;
-    String message;
-    Map<String, String> messages;
+        String message;
+        Map<String, String> messages;
 
-    public static ErrorResponse of(ApiException e) {
-        return ErrorResponse.builder()
-                .code(e.getStatus().getStatusCode())
-                .message(e.getStatus().getMessage())
+        public static ErrorResponse of(ApiException e) {
+            return ErrorResponse.builder()
+                    .code(e.getStatus().getStatusCode())
+                    .message(e.getStatus().getMessage())
                 .build();
     }
     public static ErrorResponse of(RuntimeException e) {
