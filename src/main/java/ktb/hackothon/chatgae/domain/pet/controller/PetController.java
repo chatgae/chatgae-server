@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ktb.hackothon.chatgae.domain.pet.dto.PetResponse;
+import ktb.hackothon.chatgae.domain.pet.dto.PetResponseCode;
 import ktb.hackothon.chatgae.domain.pet.entity.Pet;
 import ktb.hackothon.chatgae.domain.pet.service.PetService;
 import ktb.hackothon.chatgae.global.api.ApiException;
@@ -36,7 +37,7 @@ public class PetController {
 
         PetResponse savedPet = petService.addPet(pet, profileImage, noseImages);
 
-        if (!savedPet.isSuccess()) {
+        if (savedPet.getCode() < 0) {
             return ResponseEntity
                     .status(404)
                     .body(BaseResponse.success(pet));
@@ -82,7 +83,7 @@ public class PetController {
     public ResponseEntity<BaseResponse<?>> identifyPet(@RequestParam("file") MultipartFile file) {
         PetResponse pet = petService.identifyPet(file);
 
-        if (!pet.isSuccess()) {
+        if (pet.getCode() == PetResponseCode.AI_PROCESSING_FAILED || pet.getCode() == PetResponseCode.SERVER_ERROR) {
             return ResponseEntity
                     .status(404)
                     .body(BaseResponse.success(pet));
@@ -92,5 +93,14 @@ public class PetController {
                 .status(201)
                 .body(BaseResponse.success(pet));
 
+    }
+
+    @DeleteMapping(value = "/")
+    public ResponseEntity<BaseResponse<?>> deletePet(@RequestParam("uniqueNumber") String uniqueNumber) {
+        PetResponse response = petService.deletePet(uniqueNumber);
+
+        return ResponseEntity
+                .status(201)
+                .body(BaseResponse.success(response.getMessage()));
     }
 }
