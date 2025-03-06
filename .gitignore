@@ -10,6 +10,7 @@ build/
 .classpath
 .factorypath
 .project
+
 .settings
 .springBeans
 .sts4-cache
@@ -43,3 +44,12 @@ application-*.yml
 *.sh
 
 .DS_Store
+
+### Eclipse ###
+.metadata/
+.settings/
+.project
+.classpath
+.apt_generated/
+.factorypath
+.recommenders/

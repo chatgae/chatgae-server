@@ -48,7 +48,6 @@ public class S3Service {
             // 조정된 이미지를 S3에 업로드
             s3Client.putObject(new PutObjectRequest(bucketUserProfile, fileName, new ByteArrayInputStream(imageBytes),
                     objectMetadata));
-
             String imgUrl = s3Client.getUrl(bucketUserProfile, fileName).toString();
             imageUrl = URLDecoder.decode(imgUrl, StandardCharsets.UTF_8.toString());
             log.info(URLDecoder.decode(imgUrl, StandardCharsets.UTF_8.toString()));
