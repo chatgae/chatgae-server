@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -85,6 +86,13 @@ public class LostServiceImpl implements LostService {
                 locations.size(),
                 locations
         );
+    }
+
+    @Override
+    public void deleteLostLocations(String start, String end) {
+        LocalDateTime s = LocalDateTime.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime e = LocalDateTime.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        lostRepository.deleteByDate(s, e);
     }
 
     private double[] extractGpsFromImage(MultipartFile image) throws IOException, ImageProcessingException {

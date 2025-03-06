@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static ktb.hackothon.chatgae.domain.lost.domain.QLostLocationEntity.lostLocationEntity;
@@ -45,6 +46,20 @@ public class LostRepositoryImpl implements LostRepository {
     @Override
     public List<LostLocationEntity> findAll() {
         return lostJpaRepository.findAll();
+    }
+
+    @Override
+    public void deleteByDate(LocalDateTime s, LocalDateTime e) {
+        query.delete(lostLocationEntity)
+                .where(betweenDate(s, e))
+                .execute();
+    }
+
+    private BooleanExpression betweenDate(LocalDateTime s, LocalDateTime e) {
+        if (s == null || e == null) return null;
+
+        return lostLocationEntity.regDt.goe(s)
+                .and(lostLocationEntity.regDt.loe(e));
     }
 
     private BooleanExpression latitudeBetween(double latitude, double diff) {

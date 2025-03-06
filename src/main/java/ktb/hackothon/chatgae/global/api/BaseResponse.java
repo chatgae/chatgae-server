@@ -24,6 +24,12 @@ public class BaseResponse<T> {
     T data;
     ErrorResponse error;
 
+    public static BaseResponse<Void> success() {
+        return BaseResponse.<Void>builder()
+                .status("success")
+                .build();
+    }
+
     public static <T> BaseResponse<T> success(T data) {
         return BaseResponse.<T>builder()
                 .status("success")

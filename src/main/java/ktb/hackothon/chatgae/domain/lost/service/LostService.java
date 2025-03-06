@@ -9,4 +9,6 @@ public interface LostService {
     PkResponse createLostLocation(MultipartFile image, Coord coord);
     LostLocationResponse getLostLocations(double latitude, double longitude, int distance, int limit);
     LostLocationResponse getAllLostLocations();
+
+    void deleteLostLocations(String start, String end);
 }

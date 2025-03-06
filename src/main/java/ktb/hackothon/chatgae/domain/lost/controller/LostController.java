@@ -50,4 +50,13 @@ public class LostController {
     ) {
         return BaseResponse.success(lostService.getAllLostLocations());
     }
+
+    @DeleteMapping("")
+    public BaseResponse<Void> deleteLostLocation(
+            String start,
+            String end
+    ) {
+        lostService.deleteLostLocations(start, end);
+        return BaseResponse.success();
+    }
 }
