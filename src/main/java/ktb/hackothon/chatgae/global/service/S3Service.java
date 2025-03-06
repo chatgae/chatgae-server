@@ -113,8 +113,7 @@ public class S3Service {
 
         try (InputStream inputStream = multipartFile.getInputStream()) {
             // 기존 파일 덮어쓰기
-            s3Client.putObject(new PutObjectRequest(bucketName, fileName, inputStream, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            s3Client.putObject(new PutObjectRequest(bucketName, fileName, inputStream, objectMetadata));
             log.info("Replaced image in bucket {}: {}", bucketName, fileName);
             String imgUrl = s3Client.getUrl(bucketName, fileName).toString();
             return (URLDecoder.decode(imgUrl, StandardCharsets.UTF_8.toString()));
