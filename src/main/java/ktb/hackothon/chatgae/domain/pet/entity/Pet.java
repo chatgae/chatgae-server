@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Pets")
+@Table(name = "pets")
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -47,11 +49,11 @@ public class Pet {
     String uniqueNumber;
 
     @Column(name = "reg_dt")
-    LocalDate regDt;
+    LocalDateTime regDt;
 
 
     @PrePersist
     protected  void onCreate(){
-        this.regDt = LocalDate.now();
+        this.regDt = LocalDateTime.now();
     }
 }
