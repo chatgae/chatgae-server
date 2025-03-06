@@ -38,10 +38,10 @@ public class S3Service {
 
         try (InputStream originalInputStream = multipartFile.getInputStream()) {
             // ImageUtil을 사용하여 이미지를 1:1 비율로 조정
-            InputStream processedInputStream = imageUtil.cropImageToSquare(originalInputStream);
+            // InputStream processedInputStream = imageUtil.cropImageToSquare(originalInputStream);
 
             // 조정된 이미지의 크기를 계산
-            byte[] imageBytes = processedInputStream.readAllBytes();
+            byte[] imageBytes = originalInputStream.readAllBytes();
             objectMetadata.setContentLength(imageBytes.length);
             objectMetadata.setContentType(multipartFile.getContentType());
 
