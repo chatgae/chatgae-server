@@ -13,6 +13,7 @@ import jakarta.persistence.*;
 @Table(name = "pets")
 @Getter
 @Setter
+@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
