@@ -12,11 +12,16 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import ktb.hackothon.chatgae.global.service.S3Service;
 
-import java.time.LocalDate;
-import java.util.HashMap;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 
 @Service
 public class PetService {
@@ -38,7 +43,7 @@ public class PetService {
 
         Pet savePet = petRepository.save(pet);
 
-        String profile_url = s3Service.uploadImage(profileImage, savePet.getPetId());
+        String profile_url = s3Service.uploadImage(profileImage, 1L);
 //        String profile_url = "Test";
         savePet.setProfile(profile_url);
 
@@ -49,7 +54,9 @@ public class PetService {
     public Optional<Pet> getPetById(int petId) {
         return petRepository.findById(petId);
     }
-
+    public Optional<List<Pet>> getPetList(){
+        return Optional.of(petRepository.findAll());
+    }
     public Optional<Pet> identifyPet(MultipartFile file) {
         String serverUrl = "https://widely-select-polliwog.ngrok-free.app/lookup"; // 대상 서버 URL
 
@@ -62,8 +69,7 @@ public class PetService {
 
         HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<Map<String, Object>> response =
-                restTemplate.exchange(serverUrl, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<Map<String, Object>>() {});
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(serverUrl, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<Map<String, Object>>() {});
 
         Map<String, Object> responseData = response.getBody();
 
