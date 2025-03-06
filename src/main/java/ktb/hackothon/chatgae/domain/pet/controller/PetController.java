@@ -37,8 +37,8 @@ public class PetController {
 
         if (savedPet.isEmpty()) {
             return ResponseEntity
-                    .status(500)
-                    .body(BaseResponse.error());
+                    .status(201)
+                    .body(BaseResponse.success(pet));
         }
 
         return ResponseEntity
@@ -52,8 +52,24 @@ public class PetController {
 
         if (pet.isEmpty()) {
             return ResponseEntity
-                    .status(500)
-                    .body(BaseResponse.error());
+                    .status(404)
+                    .body(BaseResponse.success(pet));
+        }
+
+        return ResponseEntity
+                .status(201)
+                .body(BaseResponse.success(pet));
+    }
+
+    @GetMapping("/")
+    // ADD : 나중에는 현재 사용자의 userId를 넣어줘야 함
+    public ResponseEntity<BaseResponse<?>> getPetList() {
+        Optional<List<Pet>> pet = petService.getPetList();
+
+        if (pet.isEmpty()) {
+            return ResponseEntity
+                    .status(404)
+                    .body(BaseResponse.success(pet));
         }
 
         return ResponseEntity
@@ -67,8 +83,8 @@ public class PetController {
 
         if (pet.isEmpty()) {
             return ResponseEntity
-                    .status(500)
-                    .body(BaseResponse.error());
+                    .status(404)
+                    .body(BaseResponse.success(pet));
         }
 
         return ResponseEntity
