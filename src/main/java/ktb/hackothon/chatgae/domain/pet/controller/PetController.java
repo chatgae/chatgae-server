@@ -3,6 +3,7 @@ package ktb.hackothon.chatgae.domain.pet.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import ktb.hackothon.chatgae.domain.pet.dto.PetResponse;
 import ktb.hackothon.chatgae.domain.pet.entity.Pet;
 import ktb.hackothon.chatgae.domain.pet.service.PetService;
 import ktb.hackothon.chatgae.global.api.ApiException;
@@ -33,11 +34,11 @@ public class PetController {
 
         Pet pet = JsonUtil.fromJson(petJson, Pet.class);
 
-        Optional<Pet> savedPet = petService.addPet(pet, profileImage, noseImages);
+        PetResponse savedPet = petService.addPet(pet, profileImage, noseImages);
 
-        if (savedPet.isEmpty()) {
+        if (!savedPet.isSuccess()) {
             return ResponseEntity
-                    .status(201)
+                    .status(404)
                     .body(BaseResponse.success(pet));
         }
 
@@ -77,11 +78,11 @@ public class PetController {
                 .body(BaseResponse.success(pet));
     }
 
-    @PostMapping("/identify")
+    @PostMapping(value = "/identify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BaseResponse<?>> identifyPet(@RequestParam("file") MultipartFile file) {
-        Optional<Pet> pet = petService.identifyPet(file);
+        PetResponse pet = petService.identifyPet(file);
 
-        if (pet.isEmpty()) {
+        if (!pet.isSuccess()) {
             return ResponseEntity
                     .status(404)
                     .body(BaseResponse.success(pet));

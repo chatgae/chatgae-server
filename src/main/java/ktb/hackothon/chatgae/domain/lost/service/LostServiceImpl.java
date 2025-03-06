@@ -5,6 +5,7 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.GpsDirectory;
 import ktb.hackothon.chatgae.domain.lost.domain.LostLocationEntity;
+import ktb.hackothon.chatgae.domain.lost.dto.Coord;
 import ktb.hackothon.chatgae.domain.lost.dto.Location;
 import ktb.hackothon.chatgae.domain.lost.dto.LostLocationResponse;
 import ktb.hackothon.chatgae.domain.lost.repository.LostRepository;
@@ -13,6 +14,7 @@ import ktb.hackothon.chatgae.global.api.AppHttpStatus;
 import ktb.hackothon.chatgae.global.api.PkResponse;
 import ktb.hackothon.chatgae.global.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,33 +27,36 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class LostServiceImpl implements LostService {
 
     private final LostRepository lostRepository;
     private final S3Service s3Service;
     @Override
     @Transactional
-    public PkResponse createLostLocation(MultipartFile image) {
+    public PkResponse createLostLocation(MultipartFile image, Coord coord) {
         // 이미지 저장 후 URL 받아오기
         String imageUrl = s3Service.uploadImage(image, 0L);
-
+        log.info("createLostLocation/imageUrl : " + imageUrl);
         // 이미지 메타 데이터로 부터 위도 경도 데이터 만들기
-        double[] gps;
-
-        try {
-            gps = extractGpsFromImage(image);
-        } catch (IOException | ImageProcessingException e) {
-            throw new ApiException(AppHttpStatus.NOT_SUPPORTED_IMAGE);
-        }
+//        double[] gps;
+//
+//        try {
+//            gps = extractGpsFromImage(image);
+//            log.info("createLostLocation/gps : " + gps);
+//        } catch (IOException | ImageProcessingException e) {
+//            throw new ApiException(AppHttpStatus.NOT_SUPPORTED_IMAGE);
+//        }
 
         LostLocationEntity lostLocation = lostRepository.save(
                 LostLocationEntity.builder()
                         .imageUrl(imageUrl)
-                        .latitude(gps[0])
-                        .longitude(gps[1])
+                        .latitude(coord.getLatitude())
+                        .longitude(coord.getLongitude())
                         .regDt(LocalDateTime.now())
                         .build()
         );
+        log.info("createLostLocation/lostLocation : " + lostLocation);
 
         return PkResponse.of(lostLocation.getId());
     }
